@@ -15,33 +15,29 @@ app.use(logger("dev"));
 
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", function (request, response) {
-  response.render("index", {entries});
-});
+app.get("/", (req, res) => res.render("index", {entries}));
 
-app.get("/new-entry", function (request, response) {
-  response.render("new-entry");
-});
+app.get("/new-entry", (req, res) => res.render("new-entry"));
 
-app.post("/new-entry", function (request, response) {
-  if (!request.body.title || !request.body.body) {
-    response.status(400).send("Entries must have a title and a body.");
+app.post("/new-entry", (req, res) => {
+  if (!req.body.title || !req.body.body) {
+    res.status(400).send("Entries must have a title and a body.");
     return;
   }
 
   entries.push({
-    title: request.body.title,
-    content: request.body.body,
+    title: req.body.title,
+    content: req.body.body,
     published: new Date(),
   });
 
-  response.redirect("/");
+  res.redirect("/");
 });
 
-app.use(function (request, response) {
-  response.status(404).render("404");
+app.use((req, res) => {
+  res.status(404).render("404");
 });
 
-http.createServer(app).listen(3000, function () {
+http.createServer(app).listen(3000, () => {
   console.log("Guestbook app started on port 3000.");
 });
